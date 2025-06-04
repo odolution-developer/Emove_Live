@@ -38,12 +38,13 @@ class WooOrderDataQueueLineEpt(models.Model):
     def cron_import_stock(self):
         instances = self.env['woo.instance.ept'].search([('active', '=', True)])
         for instance in instances:
-            self.env['woo.process.import.export'].create({
-                'woo_instance_id': instance.id,
-                'woo_operation': "import_stock",
-                'auto_apply_adjustments': True
-            }).execute()
-            _logger.info("Importing stocks.")
+            with self.env.cr.savepoint():
+                self.env['woo.process.import.export'].create({
+                    'woo_instance_id': instance.id,
+                    'woo_operation': "import_stock",
+                    'auto_apply_adjustments': True
+                }).execute()
+                _logger.info("Importing stocks.")
 
     def open_sale_order(self):
         """
