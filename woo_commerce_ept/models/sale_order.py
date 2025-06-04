@@ -31,19 +31,19 @@ class SaleOrder(models.Model):
             pick = self.env["stock.picking"].search([('origin', '=', order.name), ('picking_type_id.sequence_code', '=', 'PICK'), ('backorder_id', '=', False)], limit=1)
             if order.state == 'sale' and pick and not pick.batch_id:
                 order.woo_status = 'processing'
-                api_call.update_order_status(self.woo_order_id, "processing")
+                api_call.update_order_status(order.woo_order_id, "processing")
             elif delivery.state in ['done'] and (any(move.quantity != move.product_uom_qty for move in delivery.move_ids) or delivery.backorder_id) or (back_delivery and back_delivery.state not in ['done']):
                 order.woo_status = '776incompleteor'
-                api_call.update_order_status(self.woo_order_id, "776incompleteor")
+                api_call.update_order_status(order.woo_order_id, "776incompleteor")
             elif all(move.quantity == move.product_uom_qty for move in delivery.move_ids) and delivery.state in ['done'] or (back_delivery and back_delivery.state in ['done']):
                 order.woo_status = 'complete'
-                api_call.update_order_status(self.woo_order_id, "complete")
+                api_call.update_order_status(order.woo_order_id, "complete")
             elif pick and pick.state not in ['draft', 'done', 'cancel'] and pick.batch_id:
                 order.woo_status = '220perparation_'
-                api_call.update_order_status(self.woo_order_id, "220perparation_")
+                api_call.update_order_status(order.woo_order_id, "220perparation_")
             elif delivery and pick and pick.state == 'done':
                 order.woo_status = 'ready_to_send'
-                api_call.update_order_status(self.woo_order_id, "ready_to_send")
+                api_call.update_order_status(order.woo_order_id, "ready_to_send")
     def _compute_woo_order_status(self):
         """
         Compute updated_in_woo of order from the pickings.
