@@ -113,7 +113,7 @@ class StockPicking(models.Model):
             
     stage_id = fields.Many2one('picking.stages', string="Stages")    
     state_helper = fields.Boolean(string='State Compute Helper', compute="_compute_state_helper") #, compute="_compute_state_helper"
-    woo_order_status = fields.Char(string = 'Woo Order Status', compute="_compute_woo_order_status")
+    # woo_order_status = fields.Char(string = 'Woo Order Status', compute="_compute_woo_order_status")
     currency_id = fields.Many2one('res.currency', string="Currency",
         related='company_id.currency_id',
         default=lambda
@@ -160,14 +160,14 @@ class StockPicking(models.Model):
 
             picking.state_helper = True
     
-    def _compute_woo_order_status(self):
-        for picking in self:
-            order = self.env['sale.order'].search([('name', '=', picking.origin)], limit=1)
-            # raise UserError(str(order.id))
-            if order and order.woo_order_id:
-                status = api_call.fetch_order_status(order.woo_order_id)
-                picking.woo_order_status = status
-                picking.stage_id.woo_type = status
+    # def _compute_woo_order_status(self):
+    #     for picking in self:
+    #         order = self.env['sale.order'].search([('name', '=', picking.origin)], limit=1)
+    #         # raise UserError(str(order.id))
+    #         if order and order.woo_order_id:
+    #             status = api_call.fetch_order_status(order.woo_order_id)
+    #             picking.woo_order_status = status
+    #             picking.stage_id.woo_type = status
                             
     def action_open_add_to_stage_wizard(self):
 
@@ -194,11 +194,11 @@ class StockPicking(models.Model):
             })
             self.batch_id = batch.id
 
-    def create(self,vals):
-        res = super().create(vals)
-        for rec in res:
-            rec._compute_woo_order_status()
-        return res
+    # def create(self,vals):
+    #     res = super().create(vals)
+    #     for rec in res:
+    #         rec._compute_woo_order_status()
+    #     return res
 
     # def write(self, vals):
     #     pick_stage1 = self.stage_id.name
