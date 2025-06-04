@@ -1,0 +1,81 @@
+<odoo>
+    <record id="view_picking_kanban_inherit_state_helper" model="ir.ui.view">
+        <field name="name">stock.picking.kanban.inherit.state.helper</field>
+        <field name="model">stock.picking</field>
+        <field name="inherit_id" ref="stock.stock_picking_kanban"/>
+        <field name="arch" type="xml">
+
+            
+
+            <xpath expr="//kanban" position="inside">
+                <!-- <field name="stage_id" invisible="1"/> -->
+                <field name="state_helper" invisible="1"/>
+                <field name="scheduled_date"/>
+                <field name="sale_id"/>
+                <!-- <field name="carrier_id"/> -->
+                <field name="weight"/>
+                <field name="amount_total"/>
+                <field name="currency_id"/>
+                <field name="is_batch"/>
+                <button type="object" class="btn btn-primary btn-sm" name="action_open_add_to_stage_wizard" string="Add to Batch" invisible="batch_id"/>
+                
+            </xpath>
+            <xpath expr="//templates/t/div[contains(@t-attf-class, 'oe_kanban_card')]/div[@class='o_kanban_record_body']" position="inside">
+                
+
+                <div style="display: flex; justify-content: space-between; gap: 16px;">
+                    
+                    <div style="flex: 1;">
+                        <field name="is_batch" widget="boolean_toggle" string="Incude in Batch" invisible="batch_id"/>
+                    </div>
+                    <div style="flex: 1; text-align: right;">
+                        <button type="object" class="btn btn-primary btn-sm" name="action_open_add_to_stage_wizard" string="Add to Batch" invisible="batch_id"/>
+                    </div>
+                </div>
+            </xpath>
+
+            <xpath expr="//templates/t/div[contains(@t-attf-class, 'oe_kanban_card')]/div[@class='o_kanban_record_body']" position="inside">
+                <div style="display: flex; justify-content: space-between; gap: 16px;">
+                    <div style="flex: 1;">
+                        <field name="scheduled_date"/>
+                        <br/>
+                        Order
+                        <field name="sale_id"/>
+                    </div>
+                    <div style="flex: 1; text-align: right;">
+                        <h4>
+                            <field name="amount_total" widget="monetary" options="{'currency_field': 'currency_id'}"/>
+                        </h4>
+                        <span>
+                            Weight:
+                        </span>
+                        <field name="weight"/>
+                    </div>
+                </div>
+            </xpath>
+            <!-- <xpath expr="//templates/t/div[contains(@t-attf-class, 'oe_kanban_card')]/div[@class='o_kanban_record_bottom']" position="after">
+                <field name="carrier_id"/>
+            </xpath> -->
+            
+            <xpath expr="//templates/t/div[contains(@t-attf-class, 'oe_kanban_card')]/div[@class='o_kanban_record_bottom']/div[@class='oe_kanban_bottom_right']" position="replace">
+            </xpath>
+        </field>
+    </record>
+    <record id="stock_picking_filter_inherit" model="ir.ui.view">
+        <field name="name">stock.picking.filter.inherit</field>
+        <field name="model">stock.picking</field>
+        <field name="inherit_id" ref="stock.view_picking_internal_search"/>
+        <field name="arch" type="xml">
+            <filter name="status" position="after">
+                <filter string="Stages" name="stage" domain="[]" context="{'group_by': 'stage_id'}"/>
+            </filter>
+        </field>
+    </record>
+    <record id="stock_barcode.stock_picking_action_kanban" model="ir.actions.act_window">
+        <field name="context">{'search_default_stage': 1, 'contact_display': 'partner_address', 'search_default_available': 1, 'search_default_to_do_transfers': 1}</field>
+    </record>
+    
+
+
+
+</odoo>

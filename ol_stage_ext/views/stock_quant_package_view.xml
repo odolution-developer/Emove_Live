@@ -1,0 +1,15 @@
+<odoo>
+    
+    <record id="view_stock_quant_package_inherit" model="ir.ui.view">
+        <field name="name">stock.quant.package.inherit</field>
+        <field name="model">stock.quant.package</field>
+        <field name="inherit_id" ref="stock.view_quant_package_form"/>
+        <field name="arch" type="xml">
+            <field name="location_id" position="after">
+                <field name="is_cluster"/>
+                <field name="clust_color" widget='color'/>
+                
+            </field>
+        </field>
+    </record>
+</odoo>

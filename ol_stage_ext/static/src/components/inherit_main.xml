@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+    <t t-name="ol_stage_ext.MainComponentExtension"
+       t-inherit="stock_barcode.MainComponent"
+       t-inherit-mode="extension">
+        <xpath expr="//div/div[@class='o_barcode_header']" position="after">
+            <div class="d-flex flex-row justify-content-center mb-3">
+                <t t-foreach="clusters" t-as="cluster" t-key="cluster.name">
+                    <t t-if="pickingStates[0] != 'done'">
+                        <div class="p-2 me-2  text-white text-center rounded" t-attf-style="background-color: #{cluster.color}">
+                            <p> <t t-esc="cluster.name"/></p>
+                        </div>
+                    </t>
+                </t>
+                
+            </div>
+        </xpath>
+
+        <xpath expr="//div" position="inside">
+            <t t-if="env.model.selectedLineVirtualId">
+                <button t-on-click="validiateandgeneratecoupon"
+                    class="btn btn-success o_validiateandgeneratecoupon">
+                    <i class="fa fa-plus me-1"/> Generate Coupon
+                </button>
+            </t>
+        </xpath>
+
+    </t>
+</odoo>

@@ -1,0 +1,105 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+	<data>
+
+
+		<template id="report_simple_label_custom">
+			<div align="center">
+				<table class="table table-sm table-borderless" style="margin: 0; padding: 0;font-size: 8px; page-break-after: always; line-height:1px; width: 100%;">
+					<tr>
+						<td style="text-align: center; font-size:13px;">
+							<span style="border-bottom: 1px solid black;" t-esc="product.name.replace('\n', ' ')[:110]"/><br/>
+							<span t-esc="product.get_translated_name(product.name.replace('\n', ' '))[:110]"/>
+						</td>
+					</tr>
+					<tr style="text-align: center;">
+						<td style="text-align: center;">
+							<span t-esc="product.default_code" style="font-weight: bold; font-size: 17px;"/><br/>
+							<t t-if="product.barcode">
+								<div align="center">
+									<img align="center" alt="Barcode" t-if="len(product.barcode) == 13" t-att-src="'/report/barcode/?barcode_type=%s&amp;value=%s&amp;width=%s&amp;height=%s' % ('EAN13', product.barcode, 290,60)"/>
+									<img alt="Barcode" t-elif="len(product.barcode) == 8" t-att-src="'/report/barcode/?barcode_type=%s&amp;value=%s&amp;width=%s&amp;height=%s' % ('EAN8', product.barcode, 1500, 300)" style="width: 150%; height: auto; display: block; margin: 0 auto;"/>
+									<img alt="Barcode" t-else="" t-att-src="'/report/barcode/?barcode_type=%s&amp;value=%s&amp;width=%s&amp;height=%s' % ('Code128', product.barcode, 1500, 300)" style="width: 100%; height: auto; display: block; margin: 0 auto;"/><br/>
+								</div>
+								<span style="font-size:13px; display: block; text-align: center" t-field="product.barcode"/>
+							</t>
+							<t t-else="">
+								<span class="text-muted" style="font-size:7px; display: block; text-align: center;">No barcode available</span>
+							</t><br/>
+							<span style="font-size:12px; display: block; text-align: center;">Distributed by: B88460035</span>
+						</td>
+					</tr>
+
+					<!--<td style="text-align: center; font-size: 5px;">Distributed by: B88460035</td>-->
+
+				</table>
+			</div>
+		</template>
+
+		<template id="report_product_label">
+			<t t-call="web.basic_layout">
+				<div class="page text-center">
+					<t t-foreach="docs" t-as="product">
+						<t t-call="product_label_custom.report_simple_label_custom">
+							<t t-set="product" t-value="product"/>
+						</t>
+					</t>
+				</div>
+			</t>
+		</template>
+
+		<template id="report_product_template_label">
+			<t t-call="web.basic_layout">
+				<div class="page text-center" >
+					<t t-foreach="docs" t-as="template">
+						<t t-foreach="template.product_variant_ids" t-as="product">
+							<t t-call="product_label_custom.report_simple_label_custom">
+								<t t-set="product" t-value="product"/>
+							</t>
+						</t>
+					</t>
+				</div>
+			</t>
+		</template>
+
+		<record id="paperformat_barcode" model="report.paperformat">
+			<field name="name">Product Barcode</field>
+			<field name="default" eval="True"/>
+			<field name="format">custom</field>
+			<field name="page_height">30</field>
+			<field name="page_width">40</field>
+			<field name="orientation">Portrait</field>
+			<field name="margin_top">0</field>
+			<field name="margin_bottom">0</field>
+			<field name="margin_left">0</field>
+			<field name="margin_right">0</field>
+			<field name="header_line" eval="False"/>
+			<field name="header_spacing">0</field>
+			<field name="dpi">80</field>
+		</record>
+
+		<record id="report_product_label_25x37" model="ir.actions.report">
+			<field name="name">Product labels Custom</field>
+			<field name="model">product.product</field>
+			<field name="report_type">qweb-pdf</field>
+			<field name="binding_model_id" ref="product.model_product_product"/>
+			<field name="report_name">product_label_custom.report_product_label</field>
+			<field name="report_file">product_label_custom.report_product_label</field>
+			<field name="binding_type">report</field>
+			<field name="paperformat_id" ref="product_label_custom.paperformat_barcode"/>
+		</record>
+
+
+		<record id="report_product_tem_label_25x37" model="ir.actions.report">
+			<field name="name">Product labels Custom</field>
+			<field name="model">product.template</field>
+			<field name="report_type">qweb-pdf</field>
+			<field name="binding_model_id" ref="product.model_product_template"/>
+			<field name="report_name">product_label_custom.report_product_template_label</field>
+			<field name="report_file">product_label_custom.report_product_template_label</field>
+			<field name="binding_type">report</field>
+			<field name="paperformat_id" ref="product_label_custom.paperformat_barcode"/>
+		</record>
+
+	</data>
+</odoo>

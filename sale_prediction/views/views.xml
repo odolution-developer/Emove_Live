@@ -1,0 +1,48 @@
+<odoo>
+
+    <record id="stock.action_orderpoint_replenish" model="ir.actions.act_window">
+        <field name="name">Replenishment</field>
+        <field name="res_model">stock.warehouse.orderpoint</field>
+        <field name="view_mode">tree</field>
+        <field name="domain">[('sku','!=','')]</field>
+        <field name="view_id" ref="stock.view_warehouse_orderpoint_tree_editable"/>
+        <field name="search_view_id" ref="stock.stock_reorder_report_search"/>
+        <field name="help" type="html">
+          <p class="o_view_nocontent_replenishment">
+            You are good, no replenishment to perform!
+          </p><p>
+            You'll find here smart replenishment propositions based on inventory forecasts.
+            Choose the quantity to buy or manufacture and launch orders in a click.
+            To save time in the future, set the rules as "automated".
+          </p>
+        </field>
+    </record>
+
+    <record id="product_normal_form_view_inh" model="ir.ui.view">
+        <field name="name">product.product.form.inh</field>
+        <field name="model">product.product</field>
+        <field name="inherit_id" ref="product.product_normal_form_view" />
+        <field name="arch" type="xml">
+            <xpath expr="//header" position="inside">
+                <button type="object" string="Sales Prediction" name="action_predict"/>
+            </xpath>
+            <xpath expr="//notebook" position="inside">
+                <page string="Prediction">
+                       <field name="case" invisible="1"/>
+                       <field name="is_manual"/>
+                    <field name="prediction_lines">
+                        <tree editable="bottom">
+                            <field name="actual_date"/>
+                            <field name="date"/>
+                            <field name="sales" widget="integer"/>
+                            <field name="sales_prediction" widget="integer"/>
+                            <field name="min_qty" widget="integer"/>
+                            <field name="to_order_value" widget="integer"/>
+                        </tree>
+                    </field>
+                </page>
+            </xpath>
+        </field>
+    </record>
+
+</odoo>

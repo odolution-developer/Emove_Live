@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+    <!-- Tree View for Sale Order -->
+    <record id="view_stock_picking_tree_woo" model="ir.ui.view">
+        <field name="name">stock.picking.tree</field>
+        <field name="model">stock.picking</field>
+        <field name="arch" type="xml">
+            <tree string="Sale Picking" create="0">
+                <field name="origin" string="Pedido"/>
+                <field name="partner_id" string="Rol del cliente"/>
+                <field name="date_order" string="Fecha"/>
+                <field name="country_code" string="País"/>
+                <field name="woo_status" string="Estado"/>
+                <field name="payment_gateway_id" string="Método de pago"/>
+                <field name="proof_payment" string="Justificante de pago"/>
+                <field name="amount_total" string="Total"/>
+                <field name="woo_coupon_ids" widget="many2many_tags"  string="Cupones usados"/>
+                <field name="write_date" string="Última modificación"/>
+                <field name="seguimient"/>
+            </tree>
+        </field>
+    </record>
+
+    <!-- Action to Open the Tree View -->
+    <record id="action_stock_picking_tree_woo" model="ir.actions.act_window">
+        <field name="name">Picking</field>
+        <field name="res_model">stock.picking</field>
+        <field name="view_mode">tree,form</field>
+        <field name="domain">[('woo_order_id','!=',False)]</field>
+        <field name="view_id" ref="view_stock_picking_tree_woo"/>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">Create a new sale order</p>
+        </field>
+    </record>
+
+    <!-- Menu Item to Access the Action -->
+    <menuitem id="menu_stock_picking_root_woo" name="Orders" web_icon="woo_com_ext,static/description/order.png"/>
+    <menuitem id="menu_stock_picking_tree_woo" name="Orders" parent="menu_stock_picking_root_woo" action="action_stock_picking_tree_woo" sequence="10"/>
+</odoo>

@@ -1,0 +1,23 @@
+<odoo>
+
+    <record id="action_open_possible_products" model="ir.actions.act_url">
+        <field name="name">Posible productos</field>
+        <field name="url">https://docs.google.com/spreadsheets/d/1q355lK9Gmf86O-uBis6i3Ddi9NnRQdS9kng87Vy3taw/edit?usp=sharing</field>
+        <field name="target">new</field>
+    </record>
+
+    <menuitem id="menu_root_possible_products" name="Posible Productos" web_icon="hak_new_products,static/description/icon.png"/>
+    <menuitem id="menu_possible_products" name="Posible Productos" parent="menu_root_possible_products" action="action_open_possible_products" />
+
+
+
+        <record id="action_open_analaysis_products" model="ir.actions.act_url">
+        <field name="name">Analysis productos</field>
+        <field name="url">http://147.79.101.243:3000/</field>
+        <field name="target">new</field>
+    </record>
+
+    <menuitem id="menu_root_stock_analysis" name="Competidores" web_icon="hak_new_products,static/description/stock.png"/>
+    <menuitem id="menu_stock_analysis" name="Competidores" parent="menu_root_stock_analysis" action="action_open_analaysis_products" />
+
+</odoo>

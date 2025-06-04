@@ -1,0 +1,135 @@
+<?xml version="1.0"?>
+<odoo>
+
+    <record id="paperformat_custom"  model="report.paperformat">
+        <field name="name">A4 Custom</field>
+        <field name="default" eval="True"/>
+        <field name="format">A4</field>
+        <field name="page_height">0</field>
+        <field name="page_width">0</field>
+        <field name="orientation">Portrait</field>
+        <field name="margin_top">5</field>
+        <field name="margin_bottom">13</field>
+        <field name="margin_left">7</field>
+        <field name="margin_right">7</field>
+        <field name="header_line" eval="False"/>
+        <field name="header_spacing">0</field>
+        <field name="dpi">90</field>
+    </record>
+
+    <!-- Define the report action -->
+    <record id="print_drop_shiping_report" model="ir.actions.report">
+        <field name="name">Shipping Label</field>
+        <field name="model">stock.picking</field>
+        <field name="report_type">qweb-pdf</field>
+        <field name="report_name">emove_reporting.print_shipping_label</field>
+        <field name="report_file">emove_reporting.print_shipping_label</field>
+        <field name="print_report_name">'Shipping Label - %s' % (object.name)</field>
+        <field name="binding_model_id" ref="stock.model_stock_picking"/>
+        <field name="binding_type">report</field>
+        <field name="paperformat_id" ref="emove_reporting.paperformat_custom"/>
+    </record>
+
+    <template id="print_shipping_label">
+        <t t-call="web.html_container">
+            <meta charset="UTF-8"/>
+            <t t-foreach="docs" t-as="doc">
+                <div class="page" style="font-size: 14px;">
+                    <table class="table table-condensed table-borderless">
+                        <tbody>
+                            <tr>
+                                <td style="width:70%">
+                                    <h1 style="text-decoration: underline; font-style: italic; font-family: serif; margin-bottom: 10px;">Albarán de entrega</h1>
+                                </td>
+                                <td style="width:30%">
+                                    <div style="border: 1px solid black; border-radius: 10px; padding: 10px; width: 280px;">
+                                        <strong style="font-size: 23px;">Pedido #<span t-esc="doc.name.split('/')[-1]"/></strong>
+                                        <p style="font-size: 16px;">Fecha: <span t-field="doc.scheduled_date"/></p>
+                                    </div>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                    <br/>
+                    <br/>
+                    <table style="width:100%;">
+                        <thead>
+                            <tr style="background-color: #3157B5;">
+                                <th style="text-align: center; color: white; vertical-align: middle; padding: 10px;"><strong><b>QR</b></strong></th>
+                                <th style="text-align: center; color: white; vertical-align: middle; padding: 10px;"><strong><b>SKU</b></strong></th>
+                                <th style="text-align: center; color: white; vertical-align: middle; padding: 10px;"><strong><b>IMAGEN</b></strong></th>
+                                <th style="text-align: center; color: white; vertical-align: middle; padding: 10px; width:50%;"><strong><b>TITULO</b></strong></th>
+                                <th style="text-align: center; color: white; vertical-align: middle; padding: 10px;"><strong><b>CANTIDAD</b></strong></th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            
+                            <tr t-foreach="doc.move_ids_without_package" t-as="line">
+                                <td style="text-align:center;">
+                               <t t-if="line.product_id.barcode">
+                                   <div t-field="line.product_id.barcode" t-options="{'widget': 'barcode', 'symbology': 'auto', 'width': 200, 'height': 100, 'quiet': 0, 'img_style': 'height:35px;'}">
+                                       <div class="bg-light border-1 rounded d-flex flex-column align-items-center justify-content-center px-1 py-2 opacity-75 text-muted text-center">
+                                           (product barcode)
+                                       </div>
+                                   </div>
+                               </t>
+                                </td>
+                                <td style="text-align: center;">
+                                    <span class="text-nowrap"><t t-esc="line.product_id.default_code"/></span>
+                                </td>
+                                <td style="text-align:center;">
+                                    <img t-attf-src="data:image/*;base64, {{line.product_id.image_1920}}" style="width:80px; height:50px"/>
+                                </td>
+                                <td style="text-align: left; padding:10px;">
+                                    <t t-esc="line.product_id.name"/>
+                                </td>
+                                <td style="text-align: center;">
+                                    <t t-esc="line.quantity" t-options="{&quot;widget&quot;: &quot;integer&quot;}"/>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                       <div style="page-break-after: always;"/>
+                </div>
+                <div class="footer">
+                    <div style="margin-top: 40px; box-shadow: 0 2px 6px rgba(0,0,0,0.2); border-radius: 5px; overflow: hidden;">
+                        <div style="background-color: #222; color: white; padding: 8px 12px; font-size: 16px; font-weight: bold;">
+                            Important information
+                        </div>
+                        <div style="background-color: #f7f3ef; color: #333; padding: 12px; font-size: 14px; font-family: sans-serif; text-align:center;">
+
+                            <t t-set="picking" t-value="env['stock.picking'].search([('backorder_id', '=', doc.id)])"/>
+                            <t t-set="sale" t-value="env['sale.order'].search([('name', '=', doc.origin)])"/>
+                        
+                            <t t-set="product_names" t-value="''"/>
+                            <t t-set="total_quantity" t-value="0.0"/>
+                            <t t-set="total_price" t-value="0.0"/>
+                        
+                            <t t-foreach="picking.move_ids" t-as="line">
+                                <t t-set="product_names" t-value="product_names + (', ' if product_names else '') + (line.product_id.default_code or '')"/>
+                                <t t-set="total_quantity" t-value="total_quantity + line.product_uom_qty"/>
+                        
+                                <t t-set="unit_price" t-value="0.0"/>
+                                <t t-foreach="sale.order_line" t-as="s_line">
+                                    <t t-if="line.product_id == s_line.product_id">
+                                        <t t-set="unit_price" t-value="s_line.price_unit"/>
+                                    </t>
+                                </t>
+                                <t t-set="total_price" t-value="total_price + (unit_price * line.product_uom_qty)"/>
+                            </t>
+                        
+                            We regret to inform you that, due to a stock outage, it has not been possible to ship <t t-esc="total_quantity or 0"/> units of the product(s) <t t-esc="product_names or ''"/> in your order.
+                            To make up for it, we have attached below a discount code corresponding to the amount of the products not shipped,
+                            which you can use on your next purchase.
+                            <br/><br/>
+                        
+                            <strong>[%] Code: <t t-esc="picking.coupon_code or ''"/> (<t t-esc="('%.2f' % total_price)"/> €)</strong>
+                        </div>
+
+                    </div>
+
+                </div>
+            </t>
+        </t>
+    </template>
+</odoo>

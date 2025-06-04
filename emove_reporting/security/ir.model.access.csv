@@ -1,0 +1,2 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+access_emove_reporting_emove_reporting,emove_reporting.emove_reporting,model_emove_reporting_emove_reporting,base.group_user,1,1,1,1

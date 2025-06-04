@@ -1,0 +1,27 @@
+<odoo>
+
+
+    <template id="delivey_note_report_inherit" inherit_id="stock.report_picking">
+        <xpath expr="//t[@t-set='address']" position="replace">
+            <t t-set="empty"/>
+        </xpath>
+<!--        <xpath expr="//t[@t-set='information_block']" position="replace">-->
+<!--            <t t-set="empty"/>-->
+<!--        </xpath>-->
+        <xpath expr="//div[@class='page o_report_stockpicking_operations']" position="replace">
+            <div class="page">
+            <h1>Hello</h1>
+            </div>
+        </xpath>
+    </template>
+
+
+    <template id="external_layout_inherit" inherit_id="web.external_layout_boxed">
+        <xpath expr="//div[@class='col-8 text-end mb4']" position="replace">
+            <t t-set="empty"/>
+        </xpath>
+
+    </template>
+
+
+</odoo>

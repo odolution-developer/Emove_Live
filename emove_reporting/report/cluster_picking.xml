@@ -1,0 +1,139 @@
+<?xml version="1.0"?>
+<odoo>
+
+    <record id="paperformat_custom" model="report.paperformat">
+        <field name="name">A4 Custom</field>
+        <field name="default" eval="True"/>
+        <field name="format">A4</field>
+        <field name="page_height">0</field>
+        <field name="page_width">0</field>
+        <field name="orientation">Portrait</field>
+        <field name="margin_top">5</field>
+        <field name="margin_bottom">13</field>
+        <field name="margin_left">7</field>
+        <field name="margin_right">7</field>
+        <field name="header_line" eval="False"/>
+        <field name="header_spacing">0</field>
+        <field name="dpi">90</field>
+    </record>
+
+    <!-- Define the report action -->
+    <record id="print_cluster_picking_report" model="ir.actions.report">
+        <field name="name">Picking Cluster</field>
+        <field name="model">stock.picking</field>
+        <field name="report_type">qweb-pdf</field>
+        <field name="report_name">emove_reporting.print_cluster_picking</field>
+        <field name="report_file">emove_reporting.print_cluster_picking</field>
+        <field name="print_report_name">'Picking Cluster - %s' % (object.name)</field>
+        <field name="binding_model_id" ref="stock.model_stock_picking"/>
+        <field name="binding_type">report</field>
+        <field name="paperformat_id" ref="emove_reporting.paperformat_custom"/>
+    </record>
+
+    <template id="print_cluster_picking">
+        <t t-call="web.html_container">
+            <meta charset="UTF-8"/>
+
+            <!-- Loop through documents in groups of four to create pages -->
+            <t t-set="total_orders" t-value="len(docs)"/>
+            <t t-foreach="range(0, total_orders, 4)" t-as="page_start">
+                <div class="page">
+                    <!-- Display the header with the number of orders -->
+                    <h1 align="center">Picking Cluster: <t t-esc="min(4, total_orders - page_start)"/> Orders</h1>
+
+                    <!--                    <div class="row" style="height: 150px; width: 100%;">-->
+                    <!--                        &lt;!&ndash; Loop through each order in the current page (four per page) &ndash;&gt;-->
+                    <!--                        <t t-foreach="enumerate(docs[page_start:page_start + 4])" t-as="order" t-key="order[0]">-->
+                    <!--                            <t t-set="background_color" t-value="'red' if order[0] == 0 else 'blue' if order[0] == 1 else 'yellow' if order[0] == 2 else 'green'"/>-->
+                    <!--                            <t t-set="margin_style" t-value="'margin-left: 220px; margin-top: -81px;' if order[0] == 1 else 'margin-left: 440px; margin-top: -81px;' if order[0] == 2 else 'margin-left: 665px; margin-top: -81px;' if order[0] == 3 else ''"/>-->
+                    <!--                            <div t-attf-style="background-color: #{background_color}; color: black; padding: 20px; width: 150px; font-weight: bold; #{margin_style}">-->
+                    <!--                                <span style="font-size: 13px; margin-left: 20px;">-->
+                    <!--                                    PACK ID: <t t-esc="'RED' if order[0] == 0 else 'BLUE' if order[0] == 1 else 'YELLOW' if order[0] == 2 else 'GREEN'"/>-->
+                    <!--                                </span>-->
+                    <!--                                <br/>-->
+                    <!--                                <span style="font-size: 19px;">ORDER: <t t-esc="order[1].sale_id.name"/></span>-->
+                    <!--                            </div>-->
+                    <!--                        </t>-->
+                    <!--                    </div>-->
+                    <table class="table table-sm table-borderless text-center">
+                        <tr class="text-center">
+                            <t t-foreach="enumerate(docs[page_start:page_start + 4])" t-as="order" t-key="order[0]">
+                                 <t t-set="background_color" t-value="'red' if order[0] == 0 else 'blue' if order[0] == 1 else 'yellow' if order[0] == 2 else 'green'"/>
+                                    <t t-set="margin_style" t-value="'margin-left: 220px; margin-top: -81px;' if order[0] == 1 else 'margin-left: 440px; margin-top: -81px;' if order[0] == 2 else 'margin-left: 665px; margin-top: -81px;' if order[0] == 3 else ''"/>
+                                <td style="padding:20px">
+                                    <div t-attf-style="background-color: #{background_color}; color: black; padding: 20px; width: 150px; font-weight: bold; ">
+                                        <span style="font-size: 13px; margin-left: 20px;">
+                                            PACK ID: <t t-esc="'RED' if order[0] == 0 else 'BLUE' if order[0] == 1 else 'YELLOW' if order[0] == 2 else 'GREEN'"/>
+                                        </span>
+                                        <br/>
+                                        <span style="font-size: 19px;">ORDER: <t t-esc="order[1].sale_id.name"/></span>
+                                    </div>
+                                </td>
+                            </t>
+                        </tr>
+                    </table>
+                    <br/>
+
+
+                    <table style="width:100%;">
+                        <thead>
+                            <tr style="background-color: #3157B5;">
+                                <th style="text-align: center; color: white; vertical-align: middle; padding: 10px;"><strong><b>QR</b></strong></th>
+                                <th style="text-align: center; color: white; vertical-align: middle; padding: 10px;"><strong><b>ORDER</b></strong></th>
+                                <th style="text-align: center; color: white; vertical-align: middle; padding: 10px;"><strong><b>IMAGEN</b></strong></th>
+                                <th style="text-align: center; color: white; vertical-align: middle; padding: 10px; width:50%;"><strong><b>TITULO</b></strong></th>
+                                <th style="text-align: center; color: white; vertical-align: middle; padding: 10px;"><strong><b>QUANTITY</b></strong></th>
+                                <!--                            <th style="text-align: center; color: white; vertical-align: middle; padding: 10px;"><strong><b>FROM</b></strong></th>-->
+                                <th style="text-align: center; color: white; vertical-align: middle; padding: 10px;"><strong><b>SKU</b></strong></th>
+                                <th style="text-align: center; color: white; vertical-align: middle; padding: 10px;"><strong><b>TO</b></strong></th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <t t-set="doc_lines" t-value="docs[0].get_cluster_lines(docs[page_start:page_start + 4])"/>
+                            <tr t-foreach="doc_lines" t-as="line">
+                                <td style="text-align:center;">
+                                    <t t-if="line.product_id.barcode">
+                                        <div t-field="line.product_id.barcode" t-options="{'widget': 'barcode', 'symbology': 'auto', 'width': 200, 'height': 100, 'quiet': 0, 'img_style': 'height:35px;'}">
+                                            <div class="bg-light border-1 rounded d-flex flex-column align-items-center justify-content-center px-1 py-2 opacity-75 text-muted text-center">
+                                                (product barcode)
+                                            </div>
+                                        </div>
+                                    </t>
+                                </td>
+                                <td style="text-align: center;">
+                                    <t t-esc="line.picking_id.sale_id.name"/>
+                                </td>
+                                <td style="text-align:center;">
+                                    <img t-attf-src="data:image/*;base64, {{line.product_id.image_1920}}" style="width:80px; height:50px"/>
+                                </td>
+                                <td style="text-align: left; padding:10px;">
+                                    <t t-esc="line.product_id.name"/>
+                                </td>
+                                <td style="text-align: center;">
+                                    <t t-esc="line.quantity" t-options='{"widget": "integer"}'/>
+                                </td>
+                                <td style="text-align: left;">
+                                    <span class="text-nowrap"><t t-esc="line.product_id.default_code"/></span>
+                                </td>
+                                <td style="text-align: center;">
+                                    <t t-foreach="enumerate(docs[page_start:page_start + 4])" t-as="order" t-key="order[0]">
+                                        <t t-if="order[1].sale_id.name == line.picking_id.sale_id.name">
+                                            <t t-set="color" t-value="'Red' if order[0] == 0 else 'Blue' if order[0] == 1 else 'Yellow' if order[0] == 2 else 'Green'"/>
+                                        </t>
+                                    </t>
+
+
+                                    <span t-attf-style="color: black; background-color: {{ color.lower() }}; padding: 10px; border-radius: 6px;">
+                                        <t t-esc="color"/>
+                                    </span>
+                                </td>
+                            </tr>
+
+                        </tbody>
+                    </table>
+                    <div style="page-break-after: always;"></div>
+                </div>
+            </t>
+        </t>
+    </template>
+</odoo>

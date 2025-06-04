@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+        <record id="sale_predict_scheduler" model="ir.cron">
+            <field name="name">Sale predict and reorder</field>
+            <field name="model_id" ref="product.model_product_product" />
+            <field name="state">code</field>
+            <field name="active">1</field>
+            <field name="code">model.cron_predict_sale_and_reorder()</field>
+            <field name="interval_number">1</field>
+            <field name="interval_type">months</field>
+            <field name="numbercall">3</field>
+        </record>
+
+         <record id="sale_min_max_scheduler" model="ir.cron">
+            <field name="name">Min Max Scheduler</field>
+            <field name="model_id" ref="product.model_product_product" />
+            <field name="state">code</field>
+            <field name="active">1</field>
+            <field name="code">model.cron_cal_min_max()</field>
+            <field name="interval_number">20</field>
+            <field name="interval_type">minutes</field>
+            <field name="numbercall">3</field>
+        </record>
+    </data>
+</odoo>

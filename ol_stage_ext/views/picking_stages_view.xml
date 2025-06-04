@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <record id="view_picking_stages_tree" model="ir.ui.view">
+
+        <field name="name">picking.stages.list</field>
+        <field name="model">picking.stages</field>
+        <field name="arch" type="xml">
+            <tree>
+                <field name="name"/>
+                <field name="type"/>
+
+            </tree>
+        </field>
+    </record>
+    <record id="view_picking_stages_form" model="ir.ui.view">
+        <field name="name">picking.stages.form</field>
+        <field name="model">picking.stages</field>
+        <field name="arch" type="xml">
+            <form string="Picking Stages">
+                <sheet>
+                    <group>
+                        <field name="name"/>
+                        <field name="type"/>
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <record id="action_picking_stages" model="ir.actions.act_window">
+        <field name="name">Picking Stages</field>
+        <field name="res_model">picking.stages</field>
+        <field name="view_mode">tree,form</field>
+        <field name="target">current</field>
+    </record>
+    <menuitem id="menu_picking_stages" name="Picking Stages" parent="stock.menu_warehouse_report" action="action_picking_stages" sequence="10"/>
+
+</odoo>

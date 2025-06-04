@@ -1,0 +1,60 @@
+<odoo>
+  <data>
+    <!-- explicit list view definition -->
+<!--
+    <record model="ir.ui.view" id="emove_reporting.list">
+      <field name="name">emove_reporting list</field>
+      <field name="model">emove_reporting.emove_reporting</field>
+      <field name="arch" type="xml">
+        <tree>
+          <field name="name"/>
+          <field name="value"/>
+          <field name="value2"/>
+        </tree>
+      </field>
+    </record>
+-->
+
+    <!-- actions opening views on models -->
+<!--
+    <record model="ir.actions.act_window" id="emove_reporting.action_window">
+      <field name="name">emove_reporting window</field>
+      <field name="res_model">emove_reporting.emove_reporting</field>
+      <field name="view_mode">tree,form</field>
+    </record>
+-->
+
+    <!-- server action to the one above -->
+<!--
+    <record model="ir.actions.server" id="emove_reporting.action_server">
+      <field name="name">emove_reporting server</field>
+      <field name="model_id" ref="model_emove_reporting_emove_reporting"/>
+      <field name="state">code</field>
+      <field name="code">
+        action = {
+          "type": "ir.actions.act_window",
+          "view_mode": "tree,form",
+          "res_model": model._name,
+        }
+      </field>
+    </record>
+-->
+
+    <!-- Top menu item -->
+<!--
+    <menuitem name="emove_reporting" id="emove_reporting.menu_root"/>
+-->
+    <!-- menu categories -->
+<!--
+    <menuitem name="Menu 1" id="emove_reporting.menu_1" parent="emove_reporting.menu_root"/>
+    <menuitem name="Menu 2" id="emove_reporting.menu_2" parent="emove_reporting.menu_root"/>
+-->
+    <!-- actions -->
+<!--
+    <menuitem name="List" id="emove_reporting.menu_1_list" parent="emove_reporting.menu_1"
+              action="emove_reporting.action_window"/>
+    <menuitem name="Server to list" id="emove_reporting" parent="emove_reporting.menu_2"
+              action="emove_reporting.action_server"/>
+-->
+  </data>
+</odoo>

@@ -1,0 +1,175 @@
+<odoo>
+    <template id="external_layout_standard_inh" inherit_id="web.external_layout_standard">
+        <div t-attf-class="header o_company_#{company.id}_layout" position="replace">
+            <div t-attf-class="header o_company_#{company.id}_layout" t-att-style="report_header_style">
+                <div class="row">
+                    <div class="col-12 mb8">
+                        <img src="/emove_reporting/static/description/emove_header.png"
+                             alt="Logo"
+                             style="width: 100%; max-width: 100%; height: auto; margin-top: 20px;"/>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </template>
+
+    <template id="stock_delivery_order_inherit" inherit_id="stock.report_delivery_document">
+        <xpath expr="//t[@t-set='address']" position="replace">
+            <t t-set="empty"/>
+        </xpath>
+        <xpath expr="//t[@t-set='information_block']" position="replace">
+            <t t-set="empty"/>
+        </xpath>
+        <xpath expr="//div[@class='page']" position="replace">
+            <t t-foreach="docs" t-as="doc">
+                <div class="page">
+                    <h2 style="text-align: center;">
+                        <b>
+                            Albarán de entrega
+                        </b>
+                    </h2>
+                    <h5 style="margin-left: 8px;">
+                        <strong>
+                            Enviar a:
+                        </strong>
+                    </h5>
+                    <div class="row">
+                        <!-- Left side table (Customer Information) -->
+                        <div class="col-8">
+                            <table class="table table-borderless" style="border-collapse: collapse; line-height: 0.7;">
+                                <tbody>
+                                    <tr>
+                                        <td>Full name:</td>
+                                        <td>
+                                            <t t-esc="o.partner_id.name"/>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>Company:</td>
+                                        <td>
+                                            <t t-esc="o.partner_id.company_name"/>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>Address:</td>
+                                        <td class="text-nowrap">
+                                            <t t-if="o.partner_id.street">
+                                                <t t-esc="o.partner_id.street"/>,
+                                            </t>
+                                            <t t-if="o.partner_id.zip">
+                                                <t t-esc="o.partner_id.zip"/>,
+                                            </t>
+                                            <t t-if="o.partner_id.city">
+                                                <t t-esc="o.partner_id.city"/>,
+                                            </t>
+                                            <t t-if="o.partner_id.country_id">
+                                                <t t-esc="o.partner_id.country_id.name"/>
+                                            </t>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>VAT/IVA:</td>
+                                        <td>
+                                            <t t-esc="o.partner_id.vat"/>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>Phone:</td>
+                                        <td>
+                                            <t t-esc="o.partner_id.phone"/>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>Email:</td>
+                                        <td>
+                                            <t t-esc="o.partner_id.email"/>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td class="text-nowrap">Payment method:</td>
+                                        <td>
+<!--                                            <t t-esc="o.sale_id.payment_method"/>-->
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+
+                        <!-- Right side table (Order Information) -->
+                        <div class="col-4">
+                            <table class="table table-borderless" style="border-collapse: collapse; line-height: 0.7;">
+                                <tbody>
+                                    <tr>
+                                        <td>Nº de pedido:</td>
+                                        <td><t t-esc="o.name"/></td>
+                                    </tr>
+                                    <tr>
+                                        <td>Fecha de pedido:</td>
+                                        <td>
+                                            <t t-esc="o.sale_id.date_order"/>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>Método de pago:</td>
+<!--                                        <td><span t-esc="o.sale_id.payment_method"/></td>-->
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                    <br/>
+                    <table class="table table-borderless">
+                        <thead style="background-color: #3157B5;">
+                            <tr>
+                                <th style="text-align: center; color: white;  width: 80px;"><strong><b>S. No.</b></strong></th>
+                                <th style="text-align: center; color: white;"><strong><b>Imagen</b></strong></th>
+                                <th style="text-align: center; color: white;"><strong><b>Producto</b></strong></th>
+                                <th style="text-align: center; color: white;"><strong><b>Cantidad</b></strong></th>
+                            </tr>
+                        </thead>
+
+                        <tbody>
+                            <t t-set="counter" t-value="1"/>
+                            <t t-foreach="o.move_ids_without_package" t-as="line">
+                                <tr align="center">
+                                    <td style="text-align: center; vertical-align: middle; padding: 10px;">
+                                        <t t-esc="counter"/>
+                                        <t t-set="counter" t-value="counter + 1"/>
+                                    </td>
+
+                                    <td style="text-align:left">
+                                        <img t-attf-src="data:image/*;base64, {{line.product_id.image_1920}}" style="width:130%; height:30%"/>
+                                    </td>
+                                    <td style="vertical-align: middle; padding: 10px;">
+                                        <div style="text-align: left; margin-left: 12px;">
+                                            <t t-esc="line.name"/>
+                                        </div>
+                                        <div style="text-align: left; margin-left: 12px;">SKU:
+                                            <t t-esc="line.product_id.default_code"/>
+                                        </div>
+                                        <div style="text-align: left; margin-left: 12px;">
+                                            <t t-esc="line.product_id.description_sale"/>
+                                        </div>
+                                    </td>
+
+                                    <td style="text-align: center; vertical-align: middle; padding: 10px;">
+                                        <t t-esc="line.quantity" t-options='{"widget": "integer"}'/>
+                                    </td>
+                                </tr>
+                            </t>
+                        </tbody>
+                    </table>
+                </div>
+            </t>
+        </xpath>
+    </template>
+
+    <template id="external_layout_inherit" inherit_id="web.external_layout_boxed">
+        <xpath expr="//div[@class='col-6 text-end mb4']" position="replace">
+            <t t-set="empty"/>
+        </xpath>
+        <xpath expr="//div[@class='pt-5']" position="replace">
+            <t t-set="empty"/>
+        </xpath>
+    </template>
+</odoo>

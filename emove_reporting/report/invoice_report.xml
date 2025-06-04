@@ -1,0 +1,222 @@
+<odoo>
+    <template id="account_move_report_inherit" inherit_id="account.report_invoice_document">
+        <xpath expr="//div[contains(@class, 'page')]" position="replace">
+            <t t-foreach="docs" t-as="doc">
+                <div class="page">
+                    <h2 style="text-align: center;">
+                        <b>Invoice</b>
+                    </h2><br/>
+                    <div class="row">
+                        <div class="col-6">
+                            <div style="margin-left: 8px; font-size: 20px;">
+                                <strong>Customer Information:</strong>
+                            </div>
+                        </div>
+                        <div class="col-6" style="text-align: right;">
+                            <div style=" font-size: 18  px;">
+                                <strong>Invoice Number:</strong>
+                                <t t-esc="doc.name"/>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-8">
+                            <table class="table table-borderless" style="border-collapse: collapse; line-height: 0.5;">
+                                <tbody>
+                                    <tr>
+                                        <td >Full Name:</td>
+                                        <td>
+                                            <t t-esc="o.partner_id.name"/>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>Company:</td>
+                                        <td></td>
+                                    </tr>
+                                    <tr>
+                                        <td class="text-nowrap">Address:</td>
+                                        <td>
+                                            <t t-if="o.partner_id.street">
+                                                <t t-esc="o.partner_id.street"/>,
+                                            </t>
+                                            <t t-if="o.partner_id.zip">
+                                                <t t-esc="o.partner_id.zip"/>,
+                                            </t>
+                                            <t t-if="o.partner_id.city">
+                                                <t t-esc="o.partner_id.city"/>,
+                                            </t>
+                                            <t t-if="o.partner_id.country_id">
+                                                <t t-esc="o.partner_id.country_id.name"/>
+                                            </t>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>VAT:</td>
+                                        <td>
+                                            <t t-esc="o.partner_id.vat"/>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>Phone:</td>
+                                        <td>
+                                            <t t-esc="o.partner_id.phone"/>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>Email:</td>
+                                        <td>
+                                            <t t-esc="o.partner_id.email"/>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>Ship to:</td>
+                                        <td>
+                                            <t t-esc="o.partner_shipping_id.name"/>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                        <div class="col-4">
+                            <table class="table table-borderless" style="border-collapse: collapse; line-height: 0.7; padding: 1px 6px;">
+                                <tbody>
+                                    <tr>
+                                        <td class="text-end">Order No:</td>
+                                        <td class="text-end">
+                                            <t t-esc="o.invoice_origin"/>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td class="text-end">Date:</td>
+                                        <td class="text-end">
+                                            <t t-esc="o.invoice_date"/>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td class="text-end">Imports:</td>
+                                        <td class="text-end"></td>
+                                    </tr>
+                                    <tr>
+                                        <td class="text-nowrap text-end">
+                                            Payment Method:
+                                        </td>
+                                        <td class="text-end">
+
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div><br/>
+                    <table class="table table-borderless">
+                        <thead style="background-color: #3157B5;">
+                            <tr>
+                                <th style="text-align: center; color: white;  width: 80px;"><strong><b>S. No.</b></strong></th>
+                                <th style="text-align: center; color: white;"><strong><b>Imagen</b></strong></th>
+                                <th style="text-align: center; color: white;"><strong><b>Producto</b></strong></th>
+                                <th style="text-align: center; color: white;"><strong><b>Cantidad</b></strong></th>
+                                <th style="text-align: center; color: white;"><strong><b>Precio</b></strong></th>
+                                <th class="text-nowrap" style="text-align: center; color: white;" t-if="any(doc.invoice_line_ids.filtered(lambda l: l.tax_ids))"><strong><b>Impuesto</b></strong></th>
+                                <th style="text-align: center; color: white;"><strong><b>Total</b></strong></th>
+                                <th style="text-align: center; color: white;" class="text-nowrap"><strong><b>Total(imp. incl.)</b></strong></th>
+                            </tr>
+                        </thead>
+
+                        <tbody>
+                            <t t-set="counter" t-value="1"/>
+                            <t t-foreach="o.invoice_line_ids" t-as="line">
+                                <tr align="center">
+                                    <td style="text-align: center; vertical-align: middle; padding: 10px;">
+                                        <t t-esc="counter"/>
+                                        <t t-set="counter" t-value="counter + 1"/>
+                                    </td>
+
+                                    <td style="text-align:left">
+                                        <img t-attf-src="data:image/*;base64, {{line.product_id.image_1920}}" style="width:140%; height:30%"/>
+                                    </td>
+                                    <td style="vertical-align: middle; padding: 10px;">
+                                        <div style="text-align: left; margin-left: 12px;">
+                                            <t t-esc="line.product_id.name"/>
+                                        </div>
+                                        <div style="text-align: left; margin-left: 12px;">SKU:
+                                            <t t-esc="line.product_id.default_code"/>
+                                        </div>
+                                        <div style="text-align: left; margin-left: 12px;">
+                                            <t t-esc="line.product_id.description_sale"/>
+                                        </div>
+                                    </td>
+                                    <td style="text-align: center; vertical-align: middle; padding: 10px;">
+                                        <t t-esc="line.quantity" t-options='{"widget": "integer"}'/>
+                                    </td>
+                                    <td style="text-align: center; vertical-align: middle; padding: 10px;">
+                                        <t t-esc="line.price_unit"/>
+                                    </td>
+                                    <td style="text-align: center; vertical-align: middle; padding: 10px;"
+                                        t-if="any(doc.invoice_line_ids.filtered(lambda l: l.tax_ids))">
+                                        <t t-esc="', '.join(line.tax_ids.mapped('name'))"/>
+                                    </td>
+                                    <td style="text-align: center; vertical-align: middle; padding: 10px;">
+                                        <t t-esc="line.price_subtotal"/>
+                                    </td>
+                                    <td style="text-align: right; vertical-align: middle; padding: 10px;">
+                                        <t t-esc="line.price_total"/>
+                                    </td>
+                                </tr>
+                            </t>
+                        </tbody>
+                    </table>
+                    <table class="table table-borderless" style="width: 40%; float: right; line-height: 0.7;">
+                        <tbody>
+                            <tr>
+                                <td><strong>Subtotal</strong></td>
+                                <td class="text-end">
+                                    <strong><span t-esc="o.amount_untaxed" t-options="{'widget': 'monetary', 'display_currency': doc.currency_id}"/></strong>
+                                </td>
+                            </tr>
+                            <t t-if="any(o.invoice_line_ids.filtered(lambda l: l.discount > 0))">
+                                <t t-set="total_discount" t-value="sum((line.price_subtotal * line.discount / 100) for line in o.invoice_line_ids)"/>
+                                <tr>
+                                    <td>Discount Excluded</td>
+                                    <td class="text-end">
+                                        <span t-esc="total_discount" t-options="{'widget': 'monetary', 'display_currency': doc.currency_id}"/>
+                                    </td>
+                                </tr>
+                            </t>
+<!--                            <tr>-->
+<!--                                <td>VAT</td>-->
+<!--                                <td class="text-end">-->
+<!--                                    <span t-esc="o.amount_tax" t-options="{'widget': 'monetary', 'display_currency': doc.currency_id}"/>-->
+<!--                                </td>-->
+<!--                            </tr>-->
+                            <tr>
+                                <td>Total taxes</td>
+                                <td class="text-end">
+                                    <span t-esc="o.amount_tax" t-options="{'widget': 'monetary', 'display_currency': doc.currency_id}"/>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td><strong>Total</strong></td>
+                                <td class="text-end">
+                                    <span t-esc="o.amount_total" t-options="{'widget': 'monetary', 'display_currency': doc.currency_id}"/>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </t>
+        </xpath>
+    </template>
+
+
+    <template id="invoice_report_layout" inherit_id="account.report_invoice_document">
+        <xpath expr="//div[@class='row']" position="replace">
+            <t t-set="empty"/>
+        </xpath>
+    </template>
+
+    <!--    <template id="external_layout_inherit" inherit_id="web.external_layout_boxed">-->
+    <!--        <xpath expr="//div[@class='col-8 text-end mb4']" position="replace">-->
+    <!--            <t t-set="empty"/>-->
+    <!--        </xpath>-->
+    <!--    </template>-->
+</odoo>

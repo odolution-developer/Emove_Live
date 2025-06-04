@@ -1,0 +1,73 @@
+<odoo>
+
+    <record id="view_purchase_order_filter_inh" model="ir.ui.view">
+        <field name="name">purchase.order.list.select.inherit</field>
+        <field name="model">purchase.order</field>
+        <field name="inherit_id" ref="purchase.view_purchase_order_filter"/>
+        <field name="arch" type="xml">
+            <xpath expr="//filter[@name='approved']" position="after">
+                <filter string="On Hold" name="onhold_rfqs" domain="[('state', '=', 'on_hold')]"/>
+                <filter string="Processing" name="processing_rfqs" domain="[('state', '=', 'processing')]"/>
+                <filter string="On way" name="onway_rfqs" domain="[('state', 'in', ['done','purchase'])]"/>
+                <filter string="Arrived" name="arrived_rfqs" domain="[('state', 'in', ['arrived'])]"/>
+            </xpath>
+
+        </field>
+    </record>
+
+    <record id="purchase_inherit_hospital" model="ir.ui.view">
+        <field name="name">purchase.form.inherit</field>
+        <field name="model">purchase.order</field>
+        <field name="inherit_id" ref="purchase.purchase_order_form"/>
+        <field name="arch" type="xml">
+            <!-- Add custom buttons -->
+            <xpath expr="//header" position="inside">
+                <button name="action_set_on_hold" string="On Hold" type="object" class="btn-primary"
+                        invisible="state not in ('draft')"/>
+                <button name="action_delivery_validate" string="Delivered" type="object" class="btn-primary"
+                        invisible="state != 'done'"/>
+                <button name="action_set_processing" string="Processing" type="object" class="btn-secondary"
+                        invisible="state not in ('on_hold')"/>
+            </xpath>
+            <xpath expr="//header/field[@name='state']" position="replace">
+                <field name="state" widget="statusbar" statusbar_visible="draft,sent,on_hold,processing,done" readonly="1"/>
+            </xpath>
+            <xpath expr="//header/button[@name='button_confirm'][2]" position="attributes">
+                <attribute name="string">On The Way</attribute>
+                <attribute name="invisible">state != 'processing'</attribute>
+            </xpath>
+            <xpath expr="//header/button[@name='button_cancel']" position="replace">
+                <button name="button_cancel" string="Cancel" type="object" data-hotkey="x"/>
+            </xpath>
+            <xpath expr="//field[@name='order_line']/tree/field[@name='product_id']" position="before" >
+                <field name = "image_128" widget="image" force_save="1" optional="show" options='{"size": [50, 50]}' class="oe_avatar"/>
+            </xpath>
+            <xpath expr="//field[@name='order_line']/tree/field[@name='name']" position="attributes">
+                        <attribute name="column_invisible">1</attribute>
+            </xpath>
+            <xpath expr="//button[@name='action_view_picking']" position="attributes">
+                <attribute name="invisible">1</attribute>
+            </xpath>
+            <xpath expr="//field[@name='partner_ref']" position="after">
+                <field name="sent_by"/>
+            </xpath>
+        </field>
+    </record>
+
+    <record id="view_purchase_order_tree_inherit" model="ir.ui.view">
+        <field name="name">purchase.order.tree.inherit</field>
+        <field name="model">purchase.order</field>
+        <field name="inherit_id" ref="purchase.purchase_order_kpis_tree"/>
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='state']" position="replace">
+                <field name="state" optional="show" widget="badge" decoration-success="state == 'done'"
+                       decoration-danger="state == 'arrived'"
+                       decoration-warning="state == 'on_hold'" decoration-info="state == 'processing'"/>
+            </xpath>
+            <xpath expr="//field[@name='name']" position="after">
+                <field name="sent_by" column_invisible="1"/>
+                <field name="image" widget="image" string="Sent By" options="{'size': [30, 30]}"/>
+            </xpath>
+        </field>
+    </record>
+</odoo>

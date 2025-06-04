@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+        <record id="action_export_po_label" model="ir.actions.server">
+            <field name="name">Print Labels</field>
+            <field name="model_id" ref="purchase.model_purchase_order"/>
+            <field name="binding_model_id" ref="purchase.model_purchase_order"/>
+            <field name="state">code</field>
+            <field name="code">if records:
+                action = records.action_print_labels()</field>
+        </record>
+
+        <record id="action_export_po_quantity_label" model="ir.actions.server">
+            <field name="name">Print Quantity Wise Labels</field>
+            <field name="model_id" ref="purchase.model_purchase_order"/>
+            <field name="binding_model_id" ref="purchase.model_purchase_order"/>
+            <field name="state">code</field>
+            <field name="code">if records:
+                action = records.action_print_quantity_labels()</field>
+        </record>
+    </data>
+</odoo>
