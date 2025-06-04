@@ -41,7 +41,7 @@ class WooOrderDataQueueLineEpt(models.Model):
         export_stock_queue_ids = []
         qry = """UPDATE woo_export_stock_queue_ept SET is_process_queue = %s WHERE is_process_queue = %s"""
         self.env.cr.execute(qry, (False, True))
-        self._cr.commit()
+        # self._cr.commit()
 
         query = """select distinct queue.id
                 from woo_export_stock_queue_line_ept as queue_line  
