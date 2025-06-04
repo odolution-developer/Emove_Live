@@ -97,16 +97,17 @@ class WooCouponDataQueueEpt(models.Model):
         """
         for coupon in coupons:
             coupon_data_queue_line_obj = self.env["woo.coupon.data.queue.line.ept"]
-            coupon_queue_line_id = coupon_data_queue_line_obj.search(
-                [('woo_coupon', '=', coupon["id"]), ('state', 'in', ['draft', 'failed'])], limit=1)
-            if coupon_queue_line_id:
-                coupon_queue_line_id.update({'coupon_data': coupon,
-                                             'state': 'draft'})
-            else:
-                coupon_data_queue_line_obj.create({"coupon_data_queue_id": self.id,
-                                                   "woo_coupon": coupon["id"],
-                                                   "coupon_data": coupon,
-                                                   "number": coupon["code"]})
+            with self.env.cr.savepoint():
+                coupon_queue_line_id = coupon_data_queue_line_obj.search(
+                    [('woo_coupon', '=', coupon["id"]), ('state', 'in', ['draft', 'failed'])], limit=1)
+                if coupon_queue_line_id:
+                    coupon_queue_line_id.update({'coupon_data': coupon,
+                                                'state': 'draft'})
+                else:
+                    coupon_data_queue_line_obj.create({"coupon_data_queue_id": self.id,
+                                                    "woo_coupon": coupon["id"],
+                                                    "coupon_data": coupon,
+                                                    "number": coupon["code"]})
         return False
 
     def action_force_done(self):

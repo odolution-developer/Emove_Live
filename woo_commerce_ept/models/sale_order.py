@@ -191,6 +191,10 @@ class SaleOrder(models.Model):
         @author: Maulik Barad on Date 04-Nov-2019.
         Migrated by Maulik Barad on Date 07-Oct-2021.
         """
+
+        if not self.env.cr.acquire_lock(f"import_woo_orders_lock_{woo_instance.id}", blocking=False):
+            _logger.info("Another import is in progress for instance %s. Skipping this execution.", woo_instance.name)
+            return False
         woo_instance_obj = self.env["woo.instance.ept"]
         start = time.time()
 
