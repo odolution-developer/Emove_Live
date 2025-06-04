@@ -145,7 +145,7 @@ class SaleOrder(models.Model):
                 else:
                     order_data_queue.unlink()
                 del orders_data[:50]
-                self._cr.commit()
+                # self._cr.commit()
 
                 process_order_cron = self.env.ref('woo_commerce_ept.process_woo_order_data_queue',
                                                   raise_if_not_found=False)
